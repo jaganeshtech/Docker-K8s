@@ -1,0 +1,37 @@
+Step 1:
+kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/master/specs/sd/rc.yaml
+kubectl get rcsise
+kubectl get pods 
+
+Step 2
+kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/master/specs/sd/svc.yaml
+kubectl get services
+# note down the service --thesvc (Cluster IP)
+
+Step 3:
+kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/master/specs/sd/jumpod.yaml
+kubectl get pods
+
+Step 4:
+kubectl exec -it jumpod -c shell -- curl http://thesvc/info
+kubectl exec -it jumpod -c shell -- ping thesvc.default.svc.cluster.local
+
+Step 5:
+Lets create ns -other:
+kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/master/specs/sd/other-ns.yaml
+
+Step 6:
+kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/master/specs/sd/other-rc.yaml
+kubectl get rc -n other
+
+Step 7:
+kubectl apply -f https://raw.githubusercontent.com/openshift-evangelists/kbe/master/specs/sd/other-svc.yaml
+kubectl get svc -n other
+
+Step 8:
+Now access the service of others namespace from jumppod.
+kubectl exec jumpod -- curl http://thesvc.other/info
+
+
+Step 9:
+kubectl get events --sort-by='{.lastTimestamp}'
